@@ -4,6 +4,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { Gra } from "./Gra";
 import pl from "./translations/pl.json";
+import { MainView } from "./src/MainView";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -21,5 +22,5 @@ i18n
 });
 
 export const App = () => {
-    return <Gra></Gra>;
+    return <MainView/>;
 }
