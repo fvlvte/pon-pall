@@ -1,4 +1,4 @@
-package com.spadajoncekuleprezesa;
+package com.ponpall;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

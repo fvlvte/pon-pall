@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.spadajoncekuleprezesa"
+    namespace "com.ponpall"
     defaultConfig {
-        applicationId "com.spadajoncekuleprezesa"
+        applicationId "com.ponpall"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

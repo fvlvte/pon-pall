@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pon-pall-logo 2.png",
+      "filename" : "logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "pon-pall-logo 1.png",
+      "filename" : "logo 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "pon-pall-logo.png",
+      "filename" : "logo 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

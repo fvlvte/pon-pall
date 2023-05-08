@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface SpadajonceKulePrezesaTests : XCTestCase
+@interface ponpallTests : XCTestCase
 
 @end
 
-@implementation SpadajonceKulePrezesaTests
+@implementation ponpallTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

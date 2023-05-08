@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "SpadajonceKulePrezesa.app"
-               BlueprintName = "SpadajonceKulePrezesa"
-               ReferencedContainer = "container:SpadajonceKulePrezesa.xcodeproj">
+               BuildableName = "ponpall.app"
+               BlueprintName = "ponpall"
+               ReferencedContainer = "container:ponpall.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "SpadajonceKulePrezesaTests.xctest"
-               BlueprintName = "SpadajonceKulePrezesaTests"
-               ReferencedContainer = "container:SpadajonceKulePrezesa.xcodeproj">
+               BuildableName = "ponpallTests.xctest"
+               BlueprintName = "ponpallTests"
+               ReferencedContainer = "container:ponpall.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "SpadajonceKulePrezesa.app"
-            BlueprintName = "SpadajonceKulePrezesa"
-            ReferencedContainer = "container:SpadajonceKulePrezesa.xcodeproj">
+            BuildableName = "ponpall.app"
+            BlueprintName = "ponpall"
+            ReferencedContainer = "container:ponpall.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "SpadajonceKulePrezesa.app"
-            BlueprintName = "SpadajonceKulePrezesa"
-            ReferencedContainer = "container:SpadajonceKulePrezesa.xcodeproj">
+            BuildableName = "ponpall.app"
+            BlueprintName = "ponpall"
+            ReferencedContainer = "container:ponpall.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
