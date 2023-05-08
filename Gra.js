@@ -1,9 +1,10 @@
-import React, {useState as hakStan} from "react";
-import { View as Widok, StyleSheet as ArkuszStyli, 
+import React, {useRef, useEffect, useState as hakStan} from "react";
+import { Animated, View as Widok, StyleSheet as ArkuszStyli, 
 ImageBackground as ObrazTło, ScrollView as WidokObrotowy,
-Text as Tekst, Button as Przycisk, TouchableOpacity as DotykalnaPrzeźroczystość} from "react-native";
+Text as Tekst, Button as Przycisk, TouchableOpacity as DotykalnaPrzeźroczystość, Image, SafeAreaView, Dimensions} from "react-native";
 import {KulaZero} from "./KulaZero";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { TopMenu } from "./TopMenu";
 
 ArkuszStyli.utwurz = ArkuszStyli.create;
 var Objekt = Object;
@@ -44,14 +45,38 @@ export const Gra = () => {
     const [czyGraJestWTrybŚredni, ustawCzyGraJestWTrybŚredni] = hakStan(KŁAMSTWO);
     const [czyGraJestWTrybSzalony, ustawCzyGraJestWTrybSzalony] = hakStan(KŁAMSTWO);
 
-    const [tłoMenu, ustawTłoMenu] = hakStan(require("./assets/menu.png"));
+    const fadeInAnim = useRef(new Animated.Value(-300)).current;
+    const fadeInAnimMenu = useRef(new Animated.Value(0)).current;
+
+
+    useEffect(() => {
+        Animated.timing(fadeInAnim, {
+        toValue: 0,
+        duration: 2000,
+        useNativeDriver: true,
+        }).start();
+    }, [fadeInAnim]);
+
+    useEffect(() => {
+        Animated.timing(fadeInAnimMenu, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+        }).start();
+    }, [fadeInAnimMenu]);
+
+    const [tłoMenu, ustawTłoMenu] = hakStan(require("./assets/menu-bg.png"));
+
+    const logo = require("./assets/pon-pall-logo.png");
+
+    const {width} = Dimensions.get("screen")
 
     const ustawGreNaMenu = () => {
         ustawCzyGraJestWMenu(PRAWDA);
         ustawCzyGraJestWTrybŁatwy(KŁAMSTWO);
         ustawCzyGraJestWTrybŚredni(KŁAMSTWO);
         ustawCzyGraJestWTrybSzalony(KŁAMSTWO);
-        ustawTłoMenu(require("./assets/menu.png"));
+        ustawTłoMenu(require("./assets/menu-bg.png"));
     }
 
     const ustawGreNaTrybŁatwy = () => {
@@ -78,159 +103,35 @@ export const Gra = () => {
         ustawTłoMenu(require("./assets/szalony.png"));
     }
 
-    return <Widok style={{backgroundColor: "#35f9f8", zIndex: -9999, flex: 1}}>
-         <ObrazTło style={{flex: 1,  zIndex: -9999}} source={tłoMenu} resizeMode="cover" >
-          <Widok style={{display: "flex", marginTop: 48,  zIndex: 0, flexDirection: "row"}}>
-                        <DotykalnaPrzeźroczystość
-                        onPress={ustawGreNaMenu}
-                        style={{width: "25%", marginTop: 20, flex: 4}}>
-                            <Widok style={{backgroundColor: czyGraJestWMenu ? "red" : "magenta", borderRadius: 15}}>
-                                <Tekst style={{padding: 15, color: "white", fontWeight: czyGraJestWMenu ? "bold" : undefined }}>MENU</Tekst>
-                            </Widok>
-                        </DotykalnaPrzeźroczystość>
-                        <DotykalnaPrzeźroczystość
-                        onPress={ustawGreNaTrybŁatwy}
-                        style={{width: "25%", marginTop: 20, flex: 4}}>
-                            <Widok style={{backgroundColor: czyGraJestWTrybŁatwy ? "red" : "magenta", borderRadius: 15}}>
-                                <Tekst style={{padding: 15, color: "white", fontWeight: czyGraJestWTrybŁatwy ? "bold" : undefined}}>PROSTY</Tekst>
-                            </Widok>
-                        </DotykalnaPrzeźroczystość>
-                        <DotykalnaPrzeźroczystość
-                        onPress={ustawGreNaTrybŚredni}
-                        style={{width: "25%", marginTop: 20, flex: 4}}>
-                            <Widok style={{backgroundColor: czyGraJestWTrybŚredni ? "red" : "magenta", borderRadius: 15,}}>
-                                <Tekst style={{padding: 15, color: "white", fontWeight: czyGraJestWTrybŚredni ? "bold" : undefined}}>ŚREDNI</Tekst>
-                            </Widok>
-                        </DotykalnaPrzeźroczystość>
-                        <DotykalnaPrzeźroczystość
-                        onPress={ustawGreNaTrybSzalony}
-                        style={{width: "25%", marginTop: 20, flex: 4}}>
-                            <Widok style={{backgroundColor: czyGraJestWTrybSzalony ?  "red" : "magenta", borderRadius: 15}}>
-                                <Tekst style={{padding: 15, color: "white", fontWeight: czyGraJestWTrybSzalony ? "bold" : undefined}}>SZALONY</Tekst>
-                            </Widok>
-                        </DotykalnaPrzeźroczystość>
-                    </Widok>
+    return <Widok style={{flex: 1, width: "100%", height: "100%"}}>
+            <ObrazTło style={{height: null,
+          width: width,
+          resizeMode: "cover",
+          overflow: "hidden",
+          flex: 1}} source={tłoMenu} resizeMode="cover" >
+    <SafeAreaView style={{width: "100%", height: "100%"}}>
+         <Animated.Image source={logo} style={{width: 200,
+             transform: [{translateY: fadeInAnim}],
+            height: 200, marginLeft: "auto", marginRight: "auto"}} />
+        <Animated.View style={{opacity: fadeInAnimMenu}}>
+            <TopMenu></TopMenu>
+        </Animated.View>
         {czyGraJestWMenu && 
-        <Widok style={{flex: 1}}>
-           
-               <WidokObrotowy>
-               <Widok style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    paddingBottom: 30,
-                }}>
-                    <Tekst style={{
-                        fontSize: 36,
-                        marginTop: 60,
-                        
-                        opacity: 1,
-                        color: "white"
-                    }}>SPADAJONCE KULE PREZESA</Tekst>
-                </Widok>
                 <Widok style={{
-                    backgroundColor: "black",
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    marginTop: 10,
-                    marginBottom: 10
-                }}>
-                    <Tekst style={{
-                        fontSize: 24,
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>ZŁAP SPADAJONCOM KULE PREZESA ZANIM SPADNIE NA ZIEMIE</Tekst>
-                </Widok>
-                <Widok style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    marginTop: 10,
-                    marginBottom: 10
+                    position: "absolute",
+                    alignSelf: 'center',
+                    justifyContent: 'center', alignItems: 'center',
+                    bottom: 25
                 }}>
                     <Tekst style={{
                         fontSize: 18,
                         fontWeight: "bold",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>TRYB GRY PROSTY</Tekst>
-                    <Tekst style={{
-                        fontSize: 14,
-                        fontWeight: "200",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>Tryb głównie do praktykowania gry. Maksymalna liczba punktów 20.</Tekst>
+                        color: "white",
+                        textShadowColor: 'rgba(0, 0, 0, 1)',
+                        textShadowOffset: {width: -1, height: 3},
+                        textShadowRadius: 2
+                    }}>POKNURSKU.PL V1.0.1 </Tekst>
                 </Widok>
-                <Widok style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    marginTop: 10,
-                    marginBottom: 10
-                }}>
-                    <Tekst style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>TRYB GRY ŚREDNI</Tekst>
-                    <Tekst style={{
-                        fontSize: 14,
-                        fontWeight: "200",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>Będziesz miał super zabawe w tym trybie i sie nie zmęczysz ale te nie będzie łatwo. Maksymalna liczba punktów 20.</Tekst>
-                </Widok>
-                <Widok style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    marginTop: 10,
-                    marginBottom: 10
-                }}>
-                    <Tekst style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>TRYB GRY SZALONY</Tekst>
-                    <Tekst style={{
-                        fontSize: 14,
-                        fontWeight: "200",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>NAJTRUDNIEJSZY I TROSZKE SZALONY ALE ŚWIAT NALEZY DO ODWAZNYCH  Maksymalna liczba punktów 20 ALE DOJSCIE DO TEGO PULAPU TO CUD.</Tekst>
-                </Widok>
-                <Widok style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    marginTop: 10,
-                    marginBottom: 10
-                }}>
-                    <Tekst style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>POKNURSKU.PL</Tekst>
-                    <Tekst style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        opacity: 1,
-                        color: "white"
-                    }}>szkola programowania po polsku</Tekst>
-                </Widok>
-               </WidokObrotowy>
-            
-        </Widok>
         }
          {czyGraJestWTrybŁatwy && <Widok style={{width: "100%", height: "100%", zIndex: 999}}>
             <KulaZero 
@@ -262,6 +163,8 @@ export const Gra = () => {
                 maxKule={10}
                 przyrostKul={3000}
          ></KulaZero></Widok>}
+   
+        </SafeAreaView>
         </ObrazTło>
-    </Widok>
+   </Widok>
 }

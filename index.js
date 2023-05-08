@@ -4,6 +4,6 @@
 
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
-import { Gra } from './Gra';
+import { App } from './App';
 
-AppRegistry.registerComponent(appName, () => Gra);
+AppRegistry.registerComponent(appName, () => App);
