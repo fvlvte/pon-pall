@@ -38,9 +38,9 @@ const Styles = StyleSheet.create({
 export const MainView: () => React.JSX.Element = () => {
   const {width} = Dimensions.get('screen');
   const [currentMenuBackground] = React.useState(
-    require('../assets/menu-bg.png'),
+    require('../assets/menu/bg.png'),
   );
-  const logo = require('../assets/pon-pall-logo.png');
+  const logo = require('../assets/menu/logo.png');
 
   const logoInAnimation = useRef(new Animated.Value(-300)).current;
   useEffect(() => {
