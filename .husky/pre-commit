@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npm run lint
-#git add $(git diff --diff-filter=d --name-only --cached)
+git add $(git diff --diff-filter=d --name-only --cached)

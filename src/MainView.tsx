@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {TopMenu} from './menu/TopMenu';
+import {GraviPopeView} from './modes/GraviPopeView';
 
 const Styles = StyleSheet.create({
   viewContainer: {flex: 1, width: '100%', height: '100%'},
@@ -35,12 +36,19 @@ const Styles = StyleSheet.create({
   fullSize: {width: '100%', height: '100%'},
 });
 
+export enum ViewState {
+  MainMenu,
+  EasyMode,
+}
+
 export const MainView: () => React.JSX.Element = () => {
   const {width} = Dimensions.get('screen');
   const [currentMenuBackground] = React.useState(
     require('../assets/menu/bg.png'),
   );
   const logo = require('../assets/menu/logo.png');
+
+  const [viewState, setViewState] = React.useState(ViewState.MainMenu);
 
   const logoInAnimation = useRef(new Animated.Value(-300)).current;
   useEffect(() => {
@@ -68,19 +76,25 @@ export const MainView: () => React.JSX.Element = () => {
         source={currentMenuBackground}
         resizeMode="cover">
         <SafeAreaView style={Styles.fullSize}>
-          <Animated.Image
-            source={logo}
-            style={{...Styles.logo, transform: [{translateY: logoInAnimation}]}}
-          />
+          {viewState === 0 && (
+            <Animated.Image
+              source={logo}
+              style={{
+                ...Styles.logo,
+                transform: [{translateY: logoInAnimation}],
+              }}
+            />
+          )}
           <Animated.View style={{opacity: fadeInAnimMenu}}>
             <TopMenu
               style={Styles.menuBar}
               gameState={0}
-              setGameState={() => {
-                console.log('duxpoduxpoduxpo');
+              setGameState={index => {
+                setViewState(index);
               }}
             />
           </Animated.View>
+          {viewState === 1 && <GraviPopeView />}
           <View style={Styles.footerContainer}>
             <Text style={Styles.footerText}>POKNURSKU.PL V1.0.1 </Text>
           </View>

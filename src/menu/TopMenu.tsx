@@ -17,27 +17,32 @@ const Styles = StyleSheet.create({
 });
 
 export const TopMenu: (props: TopMenuProps) => React.JSX.Element = props => {
-  const onMenuSelect: () => void = () => {
-    console.log('duxpo');
-  };
   const {style} = props;
 
   const topografWwr523 = [
     {
       name: 'MENU_ITEM_MENU',
-      onPress: onMenuSelect,
+      onPress: () => {
+        props.setGameState(0);
+      },
     },
     {
-      name: 'MENU_ITEM_EASY',
-      onPress: onMenuSelect,
+      name: 'MENU_ITEM_MODE_FALLING',
+      onPress: () => {
+        props.setGameState(1);
+      },
     },
     {
-      name: 'MENU_ITEM_MEDIUM',
-      onPress: onMenuSelect,
+      name: 'MENU_ITEM_MODE_ANGWY',
+      onPress: () => {
+        props.setGameState(0);
+      },
     },
     {
-      name: 'MENU_ITEM_CRAZY',
-      onPress: onMenuSelect,
+      name: 'MENU_ITEM_MODE_IDK',
+      onPress: () => {
+        props.setGameState(0);
+      },
     },
   ];
 
