@@ -3,6 +3,7 @@ import {Text, View, StyleSheet} from 'react-native';
 import {GraviPopeBall} from './GraviPopeBall';
 import {GraviPopeBallLifeState, GraviPopeBallState} from './types';
 import {AI_Easy} from './EasyAI';
+import {useTranslation} from 'react-i18next';
 
 const MAX_BALLS = 3;
 
@@ -22,6 +23,8 @@ const Styles = StyleSheet.create({
 export const GraviPopeView: () => React.JSX.Element = () => {
   const [isWorking, setIsWorking] = useState(true);
   const [points, setPoints] = useState(0);
+
+  const {t} = useTranslation();
 
   const QUEUED_UPDATES: GraviPopeBallState[] = [];
 
@@ -86,7 +89,9 @@ export const GraviPopeView: () => React.JSX.Element = () => {
 
   return (
     <View style={Styles.container}>
-      <Text style={Styles.pointsText}>Punkciki: {points}</Text>
+      <Text style={Styles.pointsText}>
+        {t('GRAVIPOPE_TEXT_POINTS')}: {points}
+      </Text>
       {Object.values(ballStates).map(ballState => {
         return (
           <GraviPopeBall

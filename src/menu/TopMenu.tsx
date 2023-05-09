@@ -33,13 +33,13 @@ export const TopMenu: (props: TopMenuProps) => React.JSX.Element = props => {
       },
     },
     {
-      name: 'MENU_ITEM_MODE_ANGWY',
+      name: 'MENU_ITEM_MODE_TBD',
       onPress: () => {
         props.setGameState(0);
       },
     },
     {
-      name: 'MENU_ITEM_MODE_IDK',
+      name: 'MENU_ITEM_MODE_TBD',
       onPress: () => {
         props.setGameState(0);
       },
