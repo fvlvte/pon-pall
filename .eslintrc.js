@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    "react-hooks/exhaustive-deps": "off",
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/member-ordering': [
       'error',

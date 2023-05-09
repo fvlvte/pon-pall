@@ -8,8 +8,6 @@ const MAX_BALLS = 3;
 
 let lastUpdateTime = new Date().getTime();
 
-const QUEUED_UPDATES: GraviPopeBallState[] = [];
-
 const Styles = StyleSheet.create({
   container: {width: '100%', height: '100%'},
   pointsText: {
@@ -25,6 +23,8 @@ export const GraviPopeView: () => React.JSX.Element = () => {
   const [isWorking, setIsWorking] = useState(true);
   const [points, setPoints] = useState(0);
 
+  const QUEUED_UPDATES: GraviPopeBallState[] = [];
+
   const [ballStates, setBallStates] = React.useState<{
     [key: string]: GraviPopeBallState;
   }>({});
@@ -35,48 +35,48 @@ export const GraviPopeView: () => React.JSX.Element = () => {
     QUEUED_UPDATES.push(state);
   };
 
-  useEffect(() => {
-    const gameUpdate: () => void = () => {
-      if (!isWorking) {
-        return;
+  const gameUpdate: () => void = () => {
+    if (!isWorking) {
+      return;
+    }
+
+    const now = new Date().getTime();
+    const deltaTime = now - lastUpdateTime;
+    const deltaPercent = deltaTime / 1000;
+
+    setBallStates(prev => {
+      for (const queuedUpdate of QUEUED_UPDATES) {
+        prev[queuedUpdate.id] = queuedUpdate;
+      }
+      if (Object.values(ballStates).length < MAX_BALLS) {
+        const ballState = AI_Easy();
+        prev[ballState.id] = ballState;
       }
 
-      const now = new Date().getTime();
-      const deltaTime = now - lastUpdateTime;
-      const deltaPercent = deltaTime / 1000;
+      for (const gameStateId in prev) {
+        const ballState = ballStates[gameStateId];
+        prev[gameStateId] = AI_Easy(ballState, deltaPercent);
 
-      setBallStates(prev => {
-        for (const queuedUpdate of QUEUED_UPDATES) {
-          prev[queuedUpdate.id] = queuedUpdate;
+        if (prev[gameStateId].lifeState === GraviPopeBallLifeState.DEAD) {
+          setPoints(0);
+          delete prev[gameStateId];
+        } else if (
+          prev[gameStateId].lifeState === GraviPopeBallLifeState.PRESSED
+        ) {
+          setPoints(p => p + 1);
+          delete prev[gameStateId];
         }
-        if (Object.values(ballStates).length < MAX_BALLS) {
-          const ballState = AI_Easy();
-          prev[ballState.id] = ballState;
-        }
+      }
+      lastUpdateTime = now;
+      return {...prev};
+    });
+  };
 
-        for (const gameStateId in prev) {
-          const ballState = ballStates[gameStateId];
-          prev[gameStateId] = AI_Easy(ballState, deltaPercent);
-
-          if (prev[gameStateId].lifeState === GraviPopeBallLifeState.DEAD) {
-            setPoints(0);
-            delete prev[gameStateId];
-          } else if (
-            prev[gameStateId].lifeState === GraviPopeBallLifeState.PRESSED
-          ) {
-            setPoints(p => p + 1);
-            delete prev[gameStateId];
-          }
-        }
-        lastUpdateTime = now;
-        return {...prev};
-      });
-    };
-
+  useEffect(() => {
     if (isWorking) {
       requestAnimationFrame(gameUpdate);
     }
-  }, [ballStates, isWorking]);
+  }, [ballStates]);
 
   useEffect(() => {
     return () => {
