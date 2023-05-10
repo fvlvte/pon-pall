@@ -22,7 +22,7 @@ export function AI_Easy(
     const scale = Math.random() * 1.5 + 0.5;
 
     const y = Math.random() * 100 - 250;
-    const x = BALL_DIAMETER / 2 + Math.random() * (width - BALL_DIAMETER);
+    const x = Math.random() * (width - BALL_DIAMETER * scale);
 
     const rotationInitial = parseInt(String(Math.random() * 360), 10);
     const directionInitial = Math.random() > 0.5 ? 1 : -1;
@@ -69,7 +69,7 @@ export function AI_Easy(
     const newRotation = {
       degree:
         rotation.degree +
-        rotation.direction * (vel.x + vel.y) * (delta ? delta : 1),
+        20 * rotation.direction * (vel.x + vel.y) * (delta ? delta : 1),
       direction: rotation.direction,
     };
 

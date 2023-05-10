@@ -14,7 +14,13 @@ import {GraviPopeView} from './modes/GraviPopeView';
 const Styles = StyleSheet.create({
   viewContainer: {flex: 1, width: '100%', height: '100%'},
   viewBg: {resizeMode: 'cover', overflow: 'hidden', flex: 1},
-  logo: {width: 200, height: 200, marginLeft: 'auto', marginRight: 'auto'},
+  logo: {
+    width: 200,
+    height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 15,
+  },
   footerContainer: {
     position: 'absolute',
     alignSelf: 'center',
@@ -46,8 +52,6 @@ export const MainView: () => React.JSX.Element = () => {
   const [currentMenuBackground] = React.useState(
     require('../assets/menu/bg.png'),
   );
-  const logo = require('../assets/menu/logo.png');
-
   const [viewState, setViewState] = React.useState(ViewState.MainMenu);
 
   const logoInAnimation = useRef(new Animated.Value(-300)).current;
@@ -78,7 +82,7 @@ export const MainView: () => React.JSX.Element = () => {
         <SafeAreaView style={Styles.fullSize}>
           {viewState === 0 && (
             <Animated.Image
-              source={logo}
+              source={require('../assets/menu/logo.png')}
               style={{
                 ...Styles.logo,
                 transform: [{translateY: logoInAnimation}],

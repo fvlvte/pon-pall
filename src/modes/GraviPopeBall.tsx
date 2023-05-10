@@ -69,7 +69,7 @@ export const GraviPopeBall: (props: {
         <ImageBackground
           style={{
             width: ballStates[id].scale * BALL_DIAMETER,
-            transform: [{rotate: `${ballStates[id].rotation}deg`}],
+            transform: [{rotate: `${ballStates[id].rotation.degree}deg`}],
             height: ballStates[id].scale * BALL_DIAMETER,
           }}
           source={ballStates[id].skin.image as number}
