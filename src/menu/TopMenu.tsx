@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, ViewStyle, ImageStyle, TextStyle} from 'react-native';
-import {TopMenuGradientButton} from './TopMenuGradientButton';
+import {GradientButton} from '../GradientButton';
 
 type TopMenuProps = {
   gameState: number;
@@ -49,11 +49,7 @@ export const TopMenu: (props: TopMenuProps) => React.JSX.Element = props => {
   return (
     <View style={{...Styles.container, ...style}}>
       {topografWwr523.map((item, index) => (
-        <TopMenuGradientButton
-          key={index}
-          text={item.name}
-          onPress={item.onPress}
-        />
+        <GradientButton key={index} text={item.name} onPress={item.onPress} />
       ))}
     </View>
   );

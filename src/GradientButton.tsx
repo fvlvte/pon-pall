@@ -1,11 +1,18 @@
 import {t} from 'i18next';
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 type TopMenuGradientButtonProps = {
   text: string;
   onPress: () => void;
+  styleOverride?: ViewStyle;
 };
 
 const Styles = StyleSheet.create({
@@ -39,6 +46,7 @@ const Styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     color: 'white',
+    padding: 1,
     fontWeight: 'bold',
     textShadowColor: 'rgba(0, 0, 0, 1)',
     textShadowOffset: {width: -1, height: 3},
@@ -49,13 +57,13 @@ const Styles = StyleSheet.create({
   },
 });
 
-export const TopMenuGradientButton: (
+export const GradientButton: (
   props: TopMenuGradientButtonProps,
 ) => React.JSX.Element = props => {
   const {onPress, text} = props;
 
   return (
-    <View style={Styles.button}>
+    <View style={{...Styles.button, ...props.styleOverride}}>
       <View style={Styles.button2}>
         <TouchableOpacity onPress={onPress}>
           <LinearGradient

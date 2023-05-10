@@ -63,6 +63,10 @@ export const MainView: () => React.JSX.Element = () => {
     }).start();
   }, [logoInAnimation]);
 
+  const onReturnToMainMenu: () => void = () => {
+    setViewState(ViewState.MainMenu);
+  };
+
   const fadeInAnimMenu = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -89,16 +93,20 @@ export const MainView: () => React.JSX.Element = () => {
               }}
             />
           )}
-          <Animated.View style={{opacity: fadeInAnimMenu}}>
-            <TopMenu
-              style={Styles.menuBar}
-              gameState={0}
-              setGameState={index => {
-                setViewState(index);
-              }}
-            />
-          </Animated.View>
-          {viewState === 1 && <GraviPopeView />}
+          {viewState === 0 && (
+            <Animated.View style={{opacity: fadeInAnimMenu}}>
+              <TopMenu
+                style={Styles.menuBar}
+                gameState={0}
+                setGameState={index => {
+                  setViewState(index);
+                }}
+              />
+            </Animated.View>
+          )}
+          {viewState === 1 && (
+            <GraviPopeView onReturnToMainMenu={onReturnToMainMenu} />
+          )}
           <View style={Styles.footerContainer}>
             <Text style={Styles.footerText}>POKNURSKU.PL V1.0.1 </Text>
           </View>
