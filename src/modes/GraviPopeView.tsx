@@ -127,7 +127,6 @@ export const GraviPopeView: (props: {
   useEffect(() => {
     if (saveData) {
       AsyncStorage.setItem('gravipope_save_data', JSON.stringify(saveData));
-      console.log(saveData);
     }
   }, [saveData, setSaveData]);
 
@@ -178,7 +177,7 @@ export const GraviPopeView: (props: {
               setPoints(0);
               setViewState(ViewStates.Welcome);
               p.lastSelectedLevel = level;
-              return {...prev} as unknown as GraviPopeSaveData;
+              return {...p};
             }
             return p;
           });
