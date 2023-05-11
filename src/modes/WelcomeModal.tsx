@@ -8,6 +8,7 @@ import {
   GraviPopeLevels,
   GraviPopeSaveData,
 } from './GraviPopeView';
+import {GraviPopeController} from '../controllers/GraviPopeController';
 
 const Style = StyleSheet.create({
   difficultyImage: {
@@ -31,11 +32,15 @@ const Style = StyleSheet.create({
 export const WelcomeModal: (props: {
   isVisible: boolean;
   saveData?: GraviPopeSaveData;
-  setSaveData?: (d: GraviPopeSaveData) => void;
+  setSaveData: React.Dispatch<
+    React.SetStateAction<GraviPopeSaveData | undefined>
+  >;
   onPlay: (level: GraviPopeLevels) => void;
   onQuit: () => void;
 }) => React.JSX.Element = props => {
-  const [difficulty, setDifficulty] = React.useState(0);
+  const [difficulty, setDifficulty] = React.useState(
+    GraviPopeController.Instance.getLevel(),
+  );
 
   useEffect(() => {
     if (props.saveData) {
@@ -44,6 +49,20 @@ export const WelcomeModal: (props: {
       }
     }
   }, [props.saveData]);
+
+  useEffect(() => {
+    if (props.setSaveData) {
+      props.setSaveData(prevSaveData => {
+        if (prevSaveData && prevSaveData.lastSelectedLevel !== difficulty) {
+          return {
+            ...prevSaveData,
+            lastSelectedLevel: difficulty,
+          };
+        }
+        return prevSaveData;
+      });
+    }
+  }, [difficulty]);
 
   const SHADED_LEVEL = require('../../assets/mode-shaded.png');
 

@@ -109,7 +109,8 @@ export const GraviPopeView: (props: {
   useEffect(() => {
     AsyncStorage.getItem('gravipope_save_data').then(data => {
       if (data) {
-        setSaveData(JSON.parse(data));
+        const d = JSON.parse(data) as GraviPopeSaveData;
+        setSaveData(d);
       } else {
         setSaveData({
           lastSelectedLevel: GraviPopeLevels.EASY,
@@ -136,15 +137,15 @@ export const GraviPopeView: (props: {
     });
   }, [setSaveData]);
 
+  const {t} = useTranslation();
+
+  const [ballStates, setBallStates] = React.useState<GraviPopeBallState[]>([]);
+
   useEffect(() => {
     if (saveData) {
       AsyncStorage.setItem('gravipope_save_data', JSON.stringify(saveData));
     }
-  }, [saveData, setSaveData]);
-
-  const {t} = useTranslation();
-
-  const [ballStates, setBallStates] = React.useState<GraviPopeBallState[]>([]);
+  }, [saveData]);
 
   useEffect(() => {
     let frame = -1;
@@ -155,6 +156,24 @@ export const GraviPopeView: (props: {
         GraviPopeController.Instance.getLifeState() ===
         GraviPopeGameLifeState.GAME_LOST
       ) {
+        setSaveData(prevSaveData => {
+          if (prevSaveData) {
+            const newSaveData = {...prevSaveData};
+            const pp = GraviPopeController.Instance.getPoints();
+            const level = GraviPopeController.Instance.getLevel();
+            const levelSaveData = newSaveData.levels[level];
+            levelSaveData.lastScore = pp;
+            if (pp > levelSaveData.highScore) {
+              levelSaveData.highScore = pp;
+            }
+            prevSaveData.lastSelectedLevel = level;
+            AsyncStorage.setItem(
+              'gravipope_save_data',
+              JSON.stringify(prevSaveData),
+            );
+          }
+          return prevSaveData;
+        });
         setViewState(ViewStates.Welcome);
         GraviPopeController.Instance.reset();
       }

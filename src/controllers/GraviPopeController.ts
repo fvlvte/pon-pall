@@ -108,17 +108,21 @@ export class GraviPopeController {
     );
   }
 
+  public getLevel(): number {
+    return this.level;
+  }
+
   public disableGameSimulation(): void {
     clearInterval(this.tickInterval);
   }
 
   public play(): void {
+    this.points = 0;
     this.controllerState.lastTickTime = Date.now();
     this.gameLifeState = GraviPopeGameLifeState.GAME_RUNNING;
   }
 
   public reset(): void {
     this.gameLifeState = GraviPopeGameLifeState.GAME_IDLE;
-    this.points = 0;
   }
 }
