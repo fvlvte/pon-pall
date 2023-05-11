@@ -1,19 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
-import {GraviPopeBall} from './GraviPopeBall';
-import {GraviPopeBallLifeState, GraviPopeBallState} from './types';
-import {AI_Easy} from './EasyAI';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
+import {GraviPopeBallState} from './types';
+import {AI_Base, AI_Base_Medium} from './AI_Base';
 import {useTranslation} from 'react-i18next';
 import {WelcomeModal} from './WelcomeModal';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const MAX_BALLS = 3;
-
-let lastUpdateTime = new Date().getTime();
+import {
+  GraviPopeController,
+  GraviPopeGameLifeState,
+} from '../controllers/GraviPopeController';
+import {BALL_DIAMETER} from './helpers';
 
 const Styles = StyleSheet.create({
   container: {width: '100%', height: '100%'},
+  containerPoppa: {position: 'absolute', borderRadius: 100, overflow: 'hidden'},
   pointsText: {
     fontSize: 24,
     color: 'black',
@@ -34,14 +41,14 @@ export const GRAVIPOPE_LEVELS = [
   {
     name: 'EASY',
     levelIndex: GraviPopeLevels.EASY,
-    ai: AI_Easy,
+    ai: AI_Base,
     image: require('../../assets/mode-easy.png'),
     unlockCondition: (_param?: GraviPopeSaveData) => true,
   },
   {
     name: 'MEDIUM',
     levelIndex: GraviPopeLevels.MEDIUM,
-    ai: AI_Easy,
+    ai: AI_Base_Medium,
     image: require('../../assets/mode-medium.png'),
     unlockCondition: (param?: GraviPopeSaveData) =>
       param && param.levels[GraviPopeLevels.EASY].highScore >= 100,
@@ -49,7 +56,7 @@ export const GRAVIPOPE_LEVELS = [
   {
     name: 'HARD',
     levelIndex: GraviPopeLevels.HARD,
-    ai: AI_Easy,
+    ai: AI_Base,
     image: require('../../assets/mode-hard.png'),
     unlockCondition: (param?: GraviPopeSaveData) =>
       param && param.levels[GraviPopeLevels.MEDIUM].highScore >= 100,
@@ -57,7 +64,7 @@ export const GRAVIPOPE_LEVELS = [
   {
     name: 'HELL',
     levelIndex: GraviPopeLevels.HELL,
-    ai: AI_Easy,
+    ai: AI_Base,
     image: require('../../assets/mode-hard.png'),
     unlockCondition: (param?: GraviPopeSaveData) =>
       param && param.levels[GraviPopeLevels.HARD].highScore >= 100,
@@ -76,6 +83,7 @@ export type GraviPopeSaveData = {
 
 enum ViewStates {
   Welcome,
+  GetReady,
   Playing,
   GameOver,
 }
@@ -83,14 +91,18 @@ enum ViewStates {
 export const GraviPopeView: (props: {
   onReturnToMainMenu: () => void;
 }) => React.JSX.Element = props => {
-  const [isWorking, setIsWorking] = useState(true);
   const [points, setPoints] = useState(0);
   const [saveData, setSaveData] = useState<GraviPopeSaveData>();
   const [viewState, setViewState] = useState(ViewStates.Welcome);
-  const [level, setLevel] = useState(GraviPopeLevels.EASY);
+
+  useEffect(() => {
+    GraviPopeController.Instance.enableGameSimulation();
+    return () => GraviPopeController.Instance.disableGameSimulation();
+  }, []);
 
   const onPlay: (l: GraviPopeLevels) => void = (l: GraviPopeLevels) => {
-    setLevel(l);
+    GraviPopeController.Instance.setLevel(l);
+    GraviPopeController.Instance.play();
     setViewState(ViewStates.Playing);
   };
 
@@ -132,79 +144,25 @@ export const GraviPopeView: (props: {
 
   const {t} = useTranslation();
 
-  const QUEUED_UPDATES: GraviPopeBallState[] = [];
-
-  const [ballStates, setBallStates] = React.useState<{
-    [key: string]: GraviPopeBallState;
-  }>({});
-
-  const setBall: (state: GraviPopeBallState) => void = (
-    state: GraviPopeBallState,
-  ) => {
-    QUEUED_UPDATES.push(state);
-  };
-
-  const gameUpdate: () => void = () => {
-    if (!isWorking) {
-      return;
-    }
-
-    const now = new Date().getTime();
-    const deltaTime = now - lastUpdateTime;
-    const deltaPercent = deltaTime / 1000;
-
-    setBallStates(prev => {
-      for (const queuedUpdate of QUEUED_UPDATES) {
-        prev[queuedUpdate.id] = queuedUpdate;
-      }
-      if (Object.values(ballStates).length < MAX_BALLS) {
-        const ballState = GRAVIPOPE_LEVELS[level].ai();
-        prev[ballState.id] = ballState;
-      }
-
-      for (const gameStateId in prev) {
-        const ballState = ballStates[gameStateId];
-        prev[gameStateId] = GRAVIPOPE_LEVELS[level].ai(ballState, deltaPercent);
-
-        if (prev[gameStateId].lifeState === GraviPopeBallLifeState.DEAD) {
-          setSaveData(p => {
-            if (p) {
-              const highScore = p.levels[level].highScore;
-              if (points > highScore) {
-                p.levels[level].highScore = points;
-              }
-              p.levels[level].lastScore = points;
-              setPoints(0);
-              setViewState(ViewStates.Welcome);
-              p.lastSelectedLevel = level;
-              return {...p};
-            }
-            return p;
-          });
-
-          return {};
-        } else if (
-          prev[gameStateId].lifeState === GraviPopeBallLifeState.PRESSED
-        ) {
-          setPoints(p => p + 1);
-          delete prev[gameStateId];
-        }
-      }
-      lastUpdateTime = now;
-      return {...prev};
-    });
-  };
+  const [ballStates, setBallStates] = React.useState<GraviPopeBallState[]>([]);
 
   useEffect(() => {
-    if (isWorking && viewState === ViewStates.Playing) {
-      requestAnimationFrame(gameUpdate);
-    }
-  }, [ballStates, viewState]);
-
-  useEffect(() => {
-    return () => {
-      setIsWorking(false);
+    let frame = -1;
+    const chainFn: () => void = () => {
+      setBallStates([...GraviPopeController.Instance.getGraviPopeState()]);
+      setPoints(GraviPopeController.Instance.getPoints());
+      if (
+        GraviPopeController.Instance.getLifeState() ===
+        GraviPopeGameLifeState.GAME_LOST
+      ) {
+        setViewState(ViewStates.Welcome);
+        GraviPopeController.Instance.reset();
+      }
+      frame = requestAnimationFrame(chainFn);
+      return frame;
     };
+    chainFn();
+    return () => cancelAnimationFrame(frame as number);
   }, []);
 
   return (
@@ -221,14 +179,33 @@ export const GraviPopeView: (props: {
       <Text style={Styles.pointsText}>
         {t('GRAVIPOPE_TEXT_POINTS')}: {points}
       </Text>
-      {Object.values(ballStates).map(ballState => {
+      {ballStates.map((state: GraviPopeBallState) => {
         return (
-          <GraviPopeBall
-            key={ballState.id}
-            id={ballState.id}
-            ballStates={ballStates}
-            setBallState={setBall}
-          />
+          <TouchableOpacity
+            key={state.id}
+            activeOpacity={1}
+            onPress={(_: unknown) => {
+              GraviPopeController.Instance.updateState(state);
+            }}
+            style={{
+              ...Styles.containerPoppa,
+              top: state.pos.y,
+              left: state.pos.x,
+              width: state.scale * BALL_DIAMETER,
+              height: state.scale * BALL_DIAMETER,
+            }}>
+            {state.skin.image && (
+              <ImageBackground
+                style={{
+                  width: state.scale * BALL_DIAMETER,
+                  transform: [{rotate: `${state.rotation.degree}deg`}],
+                  height: state.scale * BALL_DIAMETER,
+                }}
+                source={state.skin.image as number}
+                resizeMode="cover"
+              />
+            )}
+          </TouchableOpacity>
         );
       })}
     </View>

@@ -6,22 +6,38 @@ import {
   GraviPopeBallState,
 } from './types';
 
-export function AI_Easy(
+type AI_Extension = {
+  overrides: {
+    VELOCITY_CAP_Y?: number;
+    VELOCITY_CAP_X?: number;
+    GRAVITY_BASE?: number;
+    GRAVITY_RAND_BASE?: number;
+    SCALE_MIN?: number;
+    SCALE_MAX?: number;
+  };
+};
+
+export function AI_Base(
   state?: GraviPopeBallState,
   delta?: number,
+  extension?: AI_Extension,
+  index?: number,
 ): GraviPopeBallState {
   const {height, width} = Dimensions.get('screen');
 
-  const VELOCITY_CAP_Y = 2;
-  const VELOCITY_CAP_X = 0;
+  const VELOCITY_CAP_Y = extension?.overrides.VELOCITY_CAP_Y || 2;
+  const VELOCITY_CAP_X = extension?.overrides.VELOCITY_CAP_X || 0;
 
-  const GRAVITY_BASE = 100;
-  const GRAVITY_RAND_BASE = 50;
+  const GRAVITY_BASE = extension?.overrides.GRAVITY_BASE || 100;
+  const GRAVITY_RAND_BASE = extension?.overrides.GRAVITY_RAND_BASE || 50;
+
+  const SCALE_MIN = extension?.overrides.SCALE_MIN || 0.5;
+  const SCALE_MAX = extension?.overrides.SCALE_MAX || 1.5;
 
   if (typeof state === 'undefined') {
-    const scale = Math.random() * 1.5 + 0.5;
+    const scale = Math.random() * SCALE_MAX + SCALE_MIN;
 
-    const y = Math.random() * 100 - 250;
+    const y = 0;
     const x = Math.random() * (width - BALL_DIAMETER * scale);
 
     const rotationInitial = parseInt(String(Math.random() * 360), 10);
@@ -30,26 +46,32 @@ export function AI_Easy(
 
     const gravityBase = GRAVITY_BASE + Math.random() * GRAVITY_RAND_BASE;
 
+    const randomSeed = Math.random();
+    const movementVectorX = randomSeed < 0.75 ? 0 : randomSeed < 0.9 ? 1 : -1;
+
     return {
       lifeState: GraviPopeBallLifeState.SPAWNED,
       pos: {x, y, gravityBase},
       id: (Math.random() * 0xffffffff).toString(36),
       vel: {x: 0, y: 1, velocityGain},
-      movementVector: {x: 1, y: 1},
-      aiHandler: AI_Easy,
+      movementVector: {x: movementVectorX, y: 1},
+      aiHandler: AI_Base,
       scale,
       rotation: {degree: rotationInitial, direction: directionInitial},
       skin: {
         type: GraviPopeBallSkinType.IMAGE,
         color: 'red',
-        image: require('../../assets/skins/rare_poppa.png'),
+        image:
+          index && index === 1
+            ? require('../../assets/skins/evil_poppa.png')
+            : require('../../assets/skins/rare_poppa.png'),
       },
     };
   } else if (state.lifeState === GraviPopeBallLifeState.SPAWNED) {
-    const {pos, vel, rotation} = state;
+    const {pos, vel, rotation, movementVector} = state;
 
     const newVel = {
-      x: vel.x,
+      x: vel.x + 0.01 * vel.velocityGain,
       y: vel.y + 0.1 * vel.velocityGain,
       velocityGain: vel.velocityGain,
     };
@@ -61,8 +83,12 @@ export function AI_Easy(
     }
 
     const newPos = {
-      x: pos.x + vel.x * pos.gravityBase * (delta ? delta : 1),
-      y: pos.y + vel.y * pos.gravityBase * (delta ? delta : 1),
+      x:
+        pos.x +
+        vel.x * pos.gravityBase * movementVector.x * (delta ? delta : 1),
+      y:
+        pos.y +
+        vel.y * pos.gravityBase * movementVector.y * (delta ? delta : 1),
       gravityBase: pos.gravityBase,
     };
 
@@ -83,13 +109,28 @@ export function AI_Easy(
       state.lifeState = GraviPopeBallLifeState.DEAD;
     }
 
-    return {
-      ...state,
-      pos: newPos,
-      vel: newVel,
-      rotation: newRotation,
-    };
+    state.pos = newPos;
+    state.vel = newVel;
+    state.rotation = newRotation;
+
+    return state;
   } else {
     return state;
   }
+}
+
+export function AI_Base_Medium(
+  state?: GraviPopeBallState,
+  delta?: number,
+): GraviPopeBallState {
+  return AI_Base(state, delta, {
+    overrides: {
+      VELOCITY_CAP_Y: 2,
+      VELOCITY_CAP_X: 0.3,
+      GRAVITY_BASE: 190,
+      GRAVITY_RAND_BASE: 50,
+      SCALE_MIN: 0.75,
+      SCALE_MAX: 1,
+    },
+  });
 }

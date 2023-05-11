@@ -1,6 +1,6 @@
 export enum GraviPopeBallLifeState {
   SPAWNED,
-  FALLING,
+  DUXPO,
   DEAD,
   PRESSED,
 }
