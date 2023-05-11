@@ -1,14 +1,17 @@
 import React, {useEffect} from 'react';
-import {GenericGradientModal} from '../modals/GenericGradientModal';
+
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {GradientButton} from '../GradientButton';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
+
+import {GenericGradientModal} from '../modals/GenericGradientModal';
+
 import {
-  GRAVIPOPE_LEVELS,
-  GraviPopeLevels,
+  GraviPopeController,
   GraviPopeSaveData,
-} from './GraviPopeView';
-import {GraviPopeController} from '../controllers/GraviPopeController';
+  GraviPopeLevels,
+  GRAVIPOPE_LEVELS,
+} from '../controllers/GraviPope';
 
 const Style = StyleSheet.create({
   difficultyImage: {
@@ -64,7 +67,7 @@ export const WelcomeModal: (props: {
     }
   }, [difficulty]);
 
-  const SHADED_LEVEL = require('../../assets/mode-shaded.png');
+  const SHADED_LEVEL_IMAGE = require('../../assets/mode-shaded.png');
 
   return (
     <GenericGradientModal isVisible={props.isVisible} headerText="GRAVIPOPE">
@@ -105,7 +108,7 @@ export const WelcomeModal: (props: {
                   source={
                     level.unlockCondition(props.saveData)
                       ? level.image
-                      : SHADED_LEVEL
+                      : SHADED_LEVEL_IMAGE
                   }
                 />
               </Grayscale>

@@ -63,8 +63,8 @@ export function AI_Base(
         color: 'red',
         image:
           index && index === 1
-            ? require('../../assets/skins/evil_poppa.png')
-            : require('../../assets/skins/rare_poppa.png'),
+            ? require('../../../assets/skins/evil_poppa.png')
+            : require('../../../assets/skins/rare_poppa.png'),
       },
     };
   } else if (state.lifeState === GraviPopeBallLifeState.SPAWNED) {

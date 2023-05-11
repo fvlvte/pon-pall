@@ -1,5 +1,5 @@
-import {GRAVIPOPE_LEVELS} from '../modes/GraviPopeView';
-import {GraviPopeBallLifeState, GraviPopeBallState} from '../modes/types';
+import {GRAVIPOPE_LEVELS} from './helpers';
+import {GraviPopeBallLifeState, GraviPopeBallState} from './types';
 
 export enum GraviPopeGameLifeState {
   GAME_IDLE,
