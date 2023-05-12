@@ -53,7 +53,6 @@ export function AI_Base(
 
     for (const s of Object.values(SKINS)) {
       const randomtest = Math.random();
-      console.log(randomtest, s.odds);
       if (randomtest <= s.odds) {
         skin = s.img;
         break;
