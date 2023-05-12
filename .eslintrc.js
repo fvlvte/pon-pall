@@ -20,6 +20,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     "react-hooks/exhaustive-deps": "off",
+    "no-console": "error",
     '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/member-ordering': [
       'error',

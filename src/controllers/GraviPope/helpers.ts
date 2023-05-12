@@ -1,5 +1,3 @@
-import {AI_Base, AI_Base_Medium} from './AI_Base';
-
 export enum GraviPopeLevels {
   EASY,
   MEDIUM,
@@ -40,39 +38,3 @@ export function makeInitialSaveData(): GraviPopeSaveData {
     },
   };
 }
-
-export const BALL_DIAMETER = 100;
-
-export const GRAVIPOPE_LEVELS = [
-  {
-    name: 'EASY',
-    levelIndex: GraviPopeLevels.EASY,
-    ai: AI_Base,
-    image: require('../../../assets/mode-easy.png'),
-    unlockCondition: (_param?: GraviPopeSaveData) => true,
-  },
-  {
-    name: 'MEDIUM',
-    levelIndex: GraviPopeLevels.MEDIUM,
-    ai: AI_Base_Medium,
-    image: require('../../../assets/mode-medium.png'),
-    unlockCondition: (param?: GraviPopeSaveData) =>
-      param && param.levels[GraviPopeLevels.EASY].highScore >= 100,
-  },
-  {
-    name: 'HARD',
-    levelIndex: GraviPopeLevels.HARD,
-    ai: AI_Base,
-    image: require('../../../assets/mode-hard.png'),
-    unlockCondition: (param?: GraviPopeSaveData) =>
-      param && param.levels[GraviPopeLevels.MEDIUM].highScore >= 100,
-  },
-  {
-    name: 'HELL',
-    levelIndex: GraviPopeLevels.HELL,
-    ai: AI_Base,
-    image: require('../../../assets/mode-hard.png'),
-    unlockCondition: (param?: GraviPopeSaveData) =>
-      param && param.levels[GraviPopeLevels.HARD].highScore >= 100,
-  },
-];

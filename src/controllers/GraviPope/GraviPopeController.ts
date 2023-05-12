@@ -1,4 +1,4 @@
-import {GRAVIPOPE_LEVELS} from './helpers';
+import {GRAVIPOPE_LEVELS} from './';
 import {GraviPopeBallLifeState, GraviPopeBallState} from './types';
 
 export enum GraviPopeGameLifeState {
@@ -57,11 +57,7 @@ export class GraviPopeController {
       }
       case GraviPopeGameLifeState.GAME_RUNNING: {
         if (Object.keys(this.graviPopeState).length < MAX_BALLS) {
-          const ballState = GRAVIPOPE_LEVELS[this.level].ai(
-            undefined,
-            undefined,
-            undefined,
-          );
+          const ballState = GRAVIPOPE_LEVELS[this.level].ai()();
           this.graviPopeState[ballState.id] = ballState;
         }
 
@@ -76,7 +72,7 @@ export class GraviPopeController {
             this.graviPopeState = {};
             break;
           } else if (ballState.lifeState === GraviPopeBallLifeState.SPAWNED) {
-            GRAVIPOPE_LEVELS[this.level].ai(ballState, oracleDelta);
+            GRAVIPOPE_LEVELS[this.level].ai()(ballState, oracleDelta);
           }
         }
       }

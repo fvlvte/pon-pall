@@ -1,11 +1,10 @@
 import {Dimensions} from 'react-native';
-import {BALL_DIAMETER} from './helpers';
+import {BALL_DIAMETER, SKINS} from '../consts';
 import {
+  GraviPopeBallState,
   GraviPopeBallLifeState,
   GraviPopeBallSkinType,
-  GraviPopeBallState,
-} from './types';
-import {SKINS} from './consts';
+} from '../types';
 
 type AI_Extension = {
   overrides: {
@@ -18,21 +17,22 @@ type AI_Extension = {
   };
 };
 
-export function AI_Base(
+export function AI(
+  this: Partial<AI_Extension> | undefined | null,
   state?: GraviPopeBallState,
   delta?: number,
-  extension?: AI_Extension,
 ): GraviPopeBallState {
   const {height, width} = Dimensions.get('screen');
 
-  const VELOCITY_CAP_Y = extension?.overrides.VELOCITY_CAP_Y || 2;
-  const VELOCITY_CAP_X = extension?.overrides.VELOCITY_CAP_X || 0;
+  const extension = this as AI_Extension;
+  const VELOCITY_CAP_Y = extension?.overrides?.VELOCITY_CAP_Y || 2;
+  const VELOCITY_CAP_X = extension?.overrides?.VELOCITY_CAP_X || 0;
 
-  const GRAVITY_BASE = extension?.overrides.GRAVITY_BASE || 100;
-  const GRAVITY_RAND_BASE = extension?.overrides.GRAVITY_RAND_BASE || 50;
+  const GRAVITY_BASE = extension?.overrides?.GRAVITY_BASE || 100;
+  const GRAVITY_RAND_BASE = extension?.overrides?.GRAVITY_RAND_BASE || 50;
 
-  const SCALE_MIN = extension?.overrides.SCALE_MIN || 0.5;
-  const SCALE_MAX = extension?.overrides.SCALE_MAX || 1.5;
+  const SCALE_MIN = extension?.overrides?.SCALE_MIN || 0.5;
+  const SCALE_MAX = extension?.overrides?.SCALE_MAX || 1.5;
 
   if (typeof state === 'undefined') {
     const scale = Math.random() * SCALE_MAX + SCALE_MIN;
@@ -65,7 +65,7 @@ export function AI_Base(
       id: (Math.random() * 0xffffffff).toString(36),
       vel: {x: 0, y: 1, velocityGain},
       movementVector: {x: movementVectorX, y: 1},
-      aiHandler: AI_Base,
+      aiHandler: AI,
       scale,
       rotation: {degree: rotationInitial, direction: directionInitial},
       skin: {
@@ -124,20 +124,4 @@ export function AI_Base(
   } else {
     return state;
   }
-}
-
-export function AI_Base_Medium(
-  state?: GraviPopeBallState,
-  delta?: number,
-): GraviPopeBallState {
-  return AI_Base(state, delta, {
-    overrides: {
-      VELOCITY_CAP_Y: 2,
-      VELOCITY_CAP_X: 0.3,
-      GRAVITY_BASE: 190,
-      GRAVITY_RAND_BASE: 50,
-      SCALE_MIN: 0.75,
-      SCALE_MAX: 1,
-    },
-  });
 }
