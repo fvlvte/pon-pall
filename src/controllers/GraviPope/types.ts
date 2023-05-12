@@ -19,8 +19,6 @@ export type GraviPopeBallState = {
   pos: {x: number; y: number; gravityBase: number};
   vel: {x: number; y: number; velocityGain: number};
 
-  aiHandler: (state?: GraviPopeBallState, delta?: number) => GraviPopeBallState;
-
   scale: number;
 
   rotation: {degree: number; direction: number};

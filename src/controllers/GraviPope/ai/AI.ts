@@ -14,8 +14,12 @@ type AI_Extension = {
     GRAVITY_RAND_BASE?: number;
     SCALE_MIN?: number;
     SCALE_MAX?: number;
+    WIND?: number;
+    WIND_CHANCE?: number;
   };
 };
+
+const WindGustCache = new Map<string, number>();
 
 export function AI(
   this: Partial<AI_Extension> | undefined | null,
@@ -33,6 +37,11 @@ export function AI(
 
   const SCALE_MIN = extension?.overrides?.SCALE_MIN || 0.5;
   const SCALE_MAX = extension?.overrides?.SCALE_MAX || 1.5;
+
+  const defaultWind = extension?.overrides?.WIND || 0;
+  const windDirection = Math.random() > 0.5 ? 1 : -1;
+
+  const windChance = extension?.overrides?.WIND_CHANCE || 0;
 
   if (typeof state === 'undefined') {
     const scale = Math.random() * SCALE_MAX + SCALE_MIN;
@@ -65,7 +74,6 @@ export function AI(
       id: (Math.random() * 0xffffffff).toString(36),
       vel: {x: 0, y: 1, velocityGain},
       movementVector: {x: movementVectorX, y: 1},
-      aiHandler: AI,
       scale,
       rotation: {degree: rotationInitial, direction: directionInitial},
       skin: {
@@ -89,10 +97,35 @@ export function AI(
       newVel.x = VELOCITY_CAP_X;
     }
 
+    const windGust = WindGustCache.get(state.id) || 0;
+
+    if (defaultWind > 0) {
+      if (windGust === 0 && state.pos.y > 300) {
+        if (Math.random() < windChance) {
+          WindGustCache.set(
+            state.id,
+            defaultWind * Math.random() * windDirection,
+          );
+        }
+      }
+    } else {
+      if (windGust > 0) {
+        const newValue = windGust - defaultWind / 15;
+        WindGustCache.set(state.id, newValue >= 0 ? newValue : 0);
+      } else {
+        const newValue = windGust + 0.1;
+        WindGustCache.set(state.id, newValue <= 0 ? newValue : 0);
+      }
+    }
+
     const newPos = {
       x:
         pos.x +
-        vel.x * pos.gravityBase * movementVector.x * (delta ? delta : 1),
+        vel.x *
+          pos.gravityBase *
+          movementVector.x *
+          (delta ? delta : 1) *
+          windGust,
       y:
         pos.y +
         vel.y * pos.gravityBase * movementVector.y * (delta ? delta : 1),

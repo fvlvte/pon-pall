@@ -50,8 +50,8 @@ export const GRAVIPOPE_LEVELS = [
     name: 'HELL',
     levelIndex: GraviPopeLevels.HELL,
     ai: AI_Hell,
-    image: require('../../../assets/mode-hard.png'),
+    image: require('../../../assets/mode-hell.png'),
     unlockCondition: (param?: GraviPopeSaveData) =>
-      param && param.levels[GraviPopeLevels.HARD].highScore >= 100,
+      param && param.levels[GraviPopeLevels.MEDIUM].highScore >= 100,
   },
 ];

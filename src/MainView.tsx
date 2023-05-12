@@ -49,7 +49,7 @@ export enum ViewState {
 
 export const MainView: () => React.JSX.Element = () => {
   const {width} = Dimensions.get('screen');
-  const [currentMenuBackground] = React.useState(
+  const [currentMenuBackground, setMenuBackground] = React.useState(
     require('../assets/menu/bg.png'),
   );
   const [viewState, setViewState] = React.useState(ViewState.MainMenu);
@@ -105,7 +105,10 @@ export const MainView: () => React.JSX.Element = () => {
             </Animated.View>
           )}
           {viewState === 1 && (
-            <GraviPopeView onReturnToMainMenu={onReturnToMainMenu} />
+            <GraviPopeView
+              setMenuBackground={setMenuBackground}
+              onReturnToMainMenu={onReturnToMainMenu}
+            />
           )}
           <View style={Styles.footerContainer}>
             <Text style={Styles.footerText}>POKNURSKU.PL V1.0.1 </Text>

@@ -22,8 +22,8 @@ const Styles = StyleSheet.create({
   pointsText: {
     fontSize: 24,
     color: 'black',
-    marginLeft: 20,
-    marginTop: 20,
+    marginLeft: 50,
+    marginTop: 10,
     fontWeight: 'bold',
   },
 });
@@ -37,6 +37,7 @@ enum ViewStates {
 
 export const GraviPopeView: (props: {
   onReturnToMainMenu: () => void;
+  setMenuBackground: (b: number) => void;
 }) => React.JSX.Element = props => {
   const {t} = useTranslation();
 
@@ -53,6 +54,11 @@ export const GraviPopeView: (props: {
   const onGameStart: (l: GraviPopeLevels) => void = (l: GraviPopeLevels) => {
     GraviPopeController.Instance.setLevel(l);
     GraviPopeController.Instance.play();
+
+    if (l === GraviPopeLevels.HELL) {
+      props.setMenuBackground(require('../../assets/menu/bg-hell.png'));
+    }
+
     setViewState(ViewStates.Playing);
   };
 
@@ -84,6 +90,7 @@ export const GraviPopeView: (props: {
         GraviPopeController.Instance.getLifeState() ===
         GraviPopeGameLifeState.GAME_LOST
       ) {
+        props.setMenuBackground(require('../../assets/menu/bg.png'));
         // HANDLE LOSS IN REACT
         setSaveData(prevSaveData => {
           if (prevSaveData) {
@@ -124,7 +131,13 @@ export const GraviPopeView: (props: {
           isVisible={viewState === ViewStates.Welcome}
         />
       )}
-      <Text style={Styles.pointsText}>
+      <Text
+        style={{
+          ...Styles.pointsText,
+          ...(GraviPopeController.Instance.getLevel() === GraviPopeLevels.HELL
+            ? {color: 'darkred'}
+            : {}),
+        }}>
         {t('GRAVIPOPE_TEXT_POINTS')}: {points}
       </Text>
       {ballStates.map(state => (

@@ -13,6 +13,8 @@ export function AI_Hell(): (
       GRAVITY_RAND_BASE: 75,
       SCALE_MIN: 0.5,
       SCALE_MAX: 1,
+      WIND: 11,
+      WIND_CHANCE: 0.25,
     },
   });
 }
