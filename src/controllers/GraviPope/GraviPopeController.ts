@@ -15,6 +15,7 @@ export class GraviPopeController {
   private level = 0;
   private readonly TIME_ORACLE_BASE: number = 1000;
   private readonly UPDATE_FRAMERATE: number = 1000 / 60;
+  private aiState: Record<string, unknown> = {};
   private gameLifeState: GraviPopeGameLifeState =
     GraviPopeGameLifeState.GAME_IDLE;
   private points = 0;
@@ -72,7 +73,11 @@ export class GraviPopeController {
             this.graviPopeState = {};
             break;
           } else if (ballState.lifeState === GraviPopeBallLifeState.SPAWNED) {
-            GRAVIPOPE_LEVELS[this.level].ai()(ballState, oracleDelta);
+            GRAVIPOPE_LEVELS[this.level].ai()(
+              ballState,
+              oracleDelta,
+              this.aiState,
+            );
           }
         }
       }
@@ -113,6 +118,7 @@ export class GraviPopeController {
 
   public play(): void {
     this.points = 0;
+    this.aiState = {};
     this.controllerState.lastTickTime = Date.now();
     this.gameLifeState = GraviPopeGameLifeState.GAME_RUNNING;
   }

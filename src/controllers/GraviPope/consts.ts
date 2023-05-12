@@ -4,18 +4,26 @@ import {GraviPopeLevels, GraviPopeSaveData} from './helpers';
 export const SKINS = {
   predator: {
     odds: 0.1,
+    minimalLevel: GraviPopeLevels.HELL,
+    maximalLevel: GraviPopeLevels.HELL,
     img: require('../../../assets/skins/predator_poppa.png'),
   },
   nightmare: {
     odds: 0.2,
+    minimalLevel: GraviPopeLevels.HARD,
+    maximalLevel: GraviPopeLevels.HELL,
     img: require('../../../assets/skins/nightmare_poppa.png'),
   },
   evil: {
     odds: 0.5,
+    minimalLevel: GraviPopeLevels.MEDIUM,
+    maximalLevel: GraviPopeLevels.HELL,
     img: require('../../../assets/skins/evil_poppa.png'),
   },
   rare: {
     odds: 1,
+    minimalLevel: GraviPopeLevels.EASY,
+    maximalLevel: GraviPopeLevels.MEDIUM,
     img: require('../../../assets/skins/rare_poppa.png'),
   },
 };

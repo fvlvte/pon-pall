@@ -5,6 +5,7 @@ import {
   GraviPopeBallLifeState,
   GraviPopeBallSkinType,
 } from '../types';
+import {GraviPopeController} from '../GraviPopeController';
 
 type AI_Extension = {
   overrides: {
@@ -16,6 +17,8 @@ type AI_Extension = {
     SCALE_MAX?: number;
     WIND?: number;
     WIND_CHANCE?: number;
+    SPEED_CAP?: number;
+    SPEED_GAIN_TICK_BASE?: number;
   };
 };
 
@@ -25,12 +28,17 @@ export function AI(
   this: Partial<AI_Extension> | undefined | null,
   state?: GraviPopeBallState,
   delta?: number,
+  aiState?: Record<string, unknown>,
 ): GraviPopeBallState {
   const {height, width} = Dimensions.get('screen');
 
   const extension = this as AI_Extension;
   const VELOCITY_CAP_Y = extension?.overrides?.VELOCITY_CAP_Y || 2;
   const VELOCITY_CAP_X = extension?.overrides?.VELOCITY_CAP_X || 0;
+
+  const SPEED_CAP = extension?.overrides?.SPEED_CAP || 1.01;
+  const SPEED_GAIN_TICK_BASE =
+    extension?.overrides?.SPEED_GAIN_TICK_BASE || 0.1;
 
   const GRAVITY_BASE = extension?.overrides?.GRAVITY_BASE || 100;
   const GRAVITY_RAND_BASE = extension?.overrides?.GRAVITY_RAND_BASE || 50;
@@ -42,6 +50,18 @@ export function AI(
   const windDirection = Math.random() > 0.5 ? 1 : -1;
 
   const windChance = extension?.overrides?.WIND_CHANCE || 0;
+
+  if (aiState) {
+    if (!aiState.speed) {
+      aiState.speed = 1;
+    } else {
+      (<number>aiState.speed) +=
+        ((Math.random() * (delta ? delta : 1)) / 60) * SPEED_GAIN_TICK_BASE;
+      if ((aiState.speed as number) > SPEED_CAP) {
+        aiState.speed = SPEED_CAP;
+      }
+    }
+  }
 
   if (typeof state === 'undefined') {
     const scale = Math.random() * SCALE_MAX + SCALE_MIN;
@@ -62,7 +82,11 @@ export function AI(
 
     for (const s of Object.values(SKINS)) {
       const randomtest = Math.random();
-      if (randomtest <= s.odds) {
+      if (
+        randomtest <= s.odds &&
+        GraviPopeController.Instance.getLevel() >= s.minimalLevel &&
+        GraviPopeController.Instance.getLevel() <= s.maximalLevel
+      ) {
         skin = s.img;
         break;
       }
@@ -129,7 +153,7 @@ export function AI(
       y:
         pos.y +
         vel.y * pos.gravityBase * movementVector.y * (delta ? delta : 1),
-      gravityBase: pos.gravityBase,
+      gravityBase: pos.gravityBase * <number>aiState?.speed,
     };
 
     const newRotation = {

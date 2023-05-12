@@ -4,6 +4,7 @@ import {AI} from './';
 export function AI_Medium(): (
   state?: GraviPopeBallState | undefined,
   delta?: number | undefined,
+  aiState?: Record<string, unknown>,
 ) => GraviPopeBallState {
   return AI.bind({
     overrides: {
@@ -13,6 +14,8 @@ export function AI_Medium(): (
       GRAVITY_RAND_BASE: 50,
       SCALE_MIN: 0.75,
       SCALE_MAX: 1,
+      SPEED_CAP: 1.015,
+      SPEED_GAIN_TICK_BASE: 0.1,
     },
   });
 }
