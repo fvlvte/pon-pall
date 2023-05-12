@@ -17,11 +17,29 @@ type AI_Extension = {
   };
 };
 
+const SKINS = {
+  predator: {
+    odds: 0.1,
+    img: require('../../../assets/skins/predator_poppa.png'),
+  },
+  nightmare: {
+    odds: 0.2,
+    img: require('../../../assets/skins/nightmare_poppa.png'),
+  },
+  evil: {
+    odds: 0.5,
+    img: require('../../../assets/skins/evil_poppa.png'),
+  },
+  rare: {
+    odds: 1,
+    img: require('../../../assets/skins/rare_poppa.png'),
+  },
+};
+
 export function AI_Base(
   state?: GraviPopeBallState,
   delta?: number,
   extension?: AI_Extension,
-  index?: number,
 ): GraviPopeBallState {
   const {height, width} = Dimensions.get('screen');
 
@@ -49,6 +67,17 @@ export function AI_Base(
     const randomSeed = Math.random();
     const movementVectorX = randomSeed < 0.75 ? 0 : randomSeed < 0.9 ? 1 : -1;
 
+    let skin = -1;
+
+    for (const s of Object.values(SKINS)) {
+      const randomtest = Math.random();
+      console.log(randomtest, s.odds);
+      if (randomtest <= s.odds) {
+        skin = s.img;
+        break;
+      }
+    }
+
     return {
       lifeState: GraviPopeBallLifeState.SPAWNED,
       pos: {x, y, gravityBase},
@@ -61,10 +90,7 @@ export function AI_Base(
       skin: {
         type: GraviPopeBallSkinType.IMAGE,
         color: 'red',
-        image:
-          index && index === 1
-            ? require('../../../assets/skins/evil_poppa.png')
-            : require('../../../assets/skins/rare_poppa.png'),
+        image: skin,
       },
     };
   } else if (state.lifeState === GraviPopeBallLifeState.SPAWNED) {

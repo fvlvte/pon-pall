@@ -61,7 +61,6 @@ export class GraviPopeController {
             undefined,
             undefined,
             undefined,
-            this.controllerState.poppaCounter++ % 2,
           );
           this.graviPopeState[ballState.id] = ballState;
         }
