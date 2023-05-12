@@ -5,6 +5,7 @@ import {
   GraviPopeBallSkinType,
   GraviPopeBallState,
 } from './types';
+import {SKINS} from './consts';
 
 type AI_Extension = {
   overrides: {
@@ -15,25 +16,6 @@ type AI_Extension = {
     SCALE_MIN?: number;
     SCALE_MAX?: number;
   };
-};
-
-const SKINS = {
-  predator: {
-    odds: 0.1,
-    img: require('../../../assets/skins/predator_poppa.png'),
-  },
-  nightmare: {
-    odds: 0.2,
-    img: require('../../../assets/skins/nightmare_poppa.png'),
-  },
-  evil: {
-    odds: 0.5,
-    img: require('../../../assets/skins/evil_poppa.png'),
-  },
-  rare: {
-    odds: 1,
-    img: require('../../../assets/skins/rare_poppa.png'),
-  },
 };
 
 export function AI_Base(
@@ -55,7 +37,7 @@ export function AI_Base(
   if (typeof state === 'undefined') {
     const scale = Math.random() * SCALE_MAX + SCALE_MIN;
 
-    const y = 0;
+    const y = -200 - Math.random() * 100;
     const x = Math.random() * (width - BALL_DIAMETER * scale);
 
     const rotationInitial = parseInt(String(Math.random() * 360), 10);
